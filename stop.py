@@ -1,2 +1,0 @@
-import np
-np.off()
