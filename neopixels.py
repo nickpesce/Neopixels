@@ -1,13 +1,14 @@
 import np, time, random, math, sys, getopt
 
-running = False
-#Determines effect  parameters to run with.
-#Param args: The arguments passed in without the script name.
-#args:
-#    - name of effect (Must be first)
-#    - -r # -g # -b #. All or none. [0, 255]
-#    - -s # speed. multiple of normal.
 def start(args):
+    """Determines effect  parameters to run with.
+
+    Param args: The arguments passed in without the script name.
+    args:
+        - name of effect (Must be first)
+        - -r [0, 255] -g [0, 255] -b [0, 255]. All or none.
+        - -s (0, infinity) speed. multiple of normal."""
+
     if len(args)<1:
         print 'sudo python neopixels.py <effect> -s <speed>'
         sys.exit(2)
@@ -53,9 +54,11 @@ def start(args):
         effect()
 
     
-#The full color spectrum is shown and it "slides"/translates across the string
-#Param speed: How fast it slides. Scales the default speed.
 def slide(speed = 1):
+    """The full color spectrum is shown and it "slides"/translates across the string
+
+    Param speed: How fast it slides. Scales the default speed."""
+
     off = 0
     while(True):
         for n in range(0, 60):
@@ -64,10 +67,12 @@ def slide(speed = 1):
         np.show()
         time.sleep(.05/speed)
         
-#Two pixels start on either end and move along the string changing color.
-#When the end is hit, they change  direction
-#Param speed: Scales the default speed.
 def bounce(speed=1):
+    """Two pixels start on either end and move along the string changing color.
+    When the end is hit, they change  direction
+
+    Param speed: Scales the default speed."""
+
     x = 0
     dx = .1
     while(True):
@@ -80,9 +85,11 @@ def bounce(speed=1):
         np.show()
         time.sleep(.001/speed)
 
-#Lights up green and red. Pattern "slides" along the string.
-#Param speed: Scales the default speed
 def christmas(speed=1):
+    """Lights up green and red. Pattern "slides" along the string.
+
+    Param speed: Scales the default speed"""
+
     for n in range(0, 60):
         x = math.fabs((30 - n)/30.0)
         np.set_pixel(n, int(255-(x*255)), int(x*255), 0)
@@ -95,9 +102,11 @@ def christmas(speed=1):
         np.show()
         time.sleep(.2/speed)
         
-#Cycles through the color spectrum. Entire string is the same color.
-#Param speed: Scales the default speed.
 def cycle(speed=1):
+    """Cycles through the color spectrum. Entire string is the same color.
+    
+    Param speed: Scales the default speed."""
+
     global running
     running = True
     while(running):
@@ -106,9 +115,11 @@ def cycle(speed=1):
             np.show()
             time.sleep(.05/speed)
 
-#Each individual light displays a different random color, changing rapidly.
-#Param speed: Scales the default speed.
 def rave(speed=1):
+    """Each individual light displays a different random color, changing rapidly.
+
+    Param speed: Scales the default speed."""
+
     global running
     running = True
     while(running):
@@ -117,10 +128,12 @@ def rave(speed=1):
         np.show();
         time.sleep(.1/speed)
 
-#Entire string flashes rapidly.
-#Param speed: Scales the default speed.
-#Param r, g, b: Default white. RGB values for light color. [0, 255]
 def strobe(speed=1, r=255, g=255, b=255):
+    """Entire string flashes rapidly.
+    
+    Param speed: Scales the default speed.
+    Param r, g, b: Default white. RGB values for light color. [0, 255]"""
+
     while(True):
         np.set_all_pixels(r, g, b)
         np.show()
@@ -128,10 +141,12 @@ def strobe(speed=1, r=255, g=255, b=255):
         np.off()
         time.sleep(.1/speed)
         
-#Entire string cycles through brightness levels. Starts off, gradually gets brighters, the darker, and repeats.
-#Param speed: Scales the default speed.
-#Param r, g, b: Default white. RGB values for light color. [0, 255]
 def throb(speed=1, r=255, b=255, g=255):
+    """Entire string cycles through brightness levels. Starts off, gradually gets brighters, the darker, and repeats.
+    
+    Param speed: Scales the default speed.
+    Param r, g, b: Default white. RGB values for light color. [0, 255]"""
+
     np.set_all_pixels(r, g, b)
     brightness = 0
     db = .01
@@ -143,17 +158,20 @@ def throb(speed=1, r=255, b=255, g=255):
         brightness += db
         time.sleep(.01/speed)
 
-#Sets the entire string to light up.
-#Param r, g, b: Default white. RGB values for light color. [0, 255]
 def on(r = 255, g = 255, b = 255):
+    """Turns the entire string on.
+    Param r, g, b: Default white. RGB values for light color. [0, 255]"""
+
     np.set_all_pixels(r, g, b)
     np.show()
     while True:
         time.sleep(1)
 
-#Pattern formed when the color spectrum is repeated and condensed, then reversed
-#Param speed: Scales the default speed.
 def disco(speed=1):
+    """Pattern formed when the color spectrum is repeated and condensed, then reversed
+    
+    Param speed: Scales the default speed."""
+
     off = 0
     while(True):
         for n in range(0, 60):
@@ -162,10 +180,12 @@ def disco(speed=1):
         np.show()
         time.sleep(.05/speed)
 
-#Each light sequentially lights up a color untill the string is filled with that color,
-#then it is repeated with the next color. Each color is .2 hue away in HSV.
-#Param speed: Scales the default speed.
 def chase(speed = 1):
+    """Each light sequentially lights up a color untill the string is filled with that color,
+    then it is repeated with the next color. Each color is .2 hue away in HSV.
+
+    Param speed: Scales the default speed."""
+
     hue = 0;
     while True:
         for n in range(0, 60):
@@ -175,8 +195,8 @@ def chase(speed = 1):
         hue += .2
         hue %= 1
     
-#Turns the string off.
 def stop():
+    """Turns the string off."""
     np.off()
 
 #Maps string names to functions
