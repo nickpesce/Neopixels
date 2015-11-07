@@ -25,20 +25,20 @@ def start(args, stop=threading.Event()):
     b = None
     try:
         #Separates the passed in arguments to option, argument tuples.
-        opts, args = getopt.getopt(args[1:], "s:r:g:b:h")
+        opts, rest = getopt.getopt(args[1:], "s:r:g:b:h")
     except getopt.GetoptError:
         return help()
         sys.exit(2)
-    for opt, arg in opts:
+    for opt, val in opts:
         #assign variables to passed in values
         if opt == '-s':
-            speed = float(arg)
+            speed = float(val)
         elif opt == '-r':
-            r = int(arg)
+            r = int(val)
         elif opt == '-g':
-            g = int(arg)
+            g = int(val)
         elif opt == '-b':
-            b = int(arg)
+            b = int(val)
         elif opt == '-h':
             return help()
 
@@ -241,3 +241,4 @@ if __name__ == "__main__":
     error = start(sys.argv[1:])
     if not error is None:
         print error
+        sys.exit(2)
