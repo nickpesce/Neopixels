@@ -15,7 +15,6 @@ t = None
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
 #Binding to "" is the same as binding to any address
 s.bind(("", 42297))
-print socket.gethostname()
 while True:    
     data, addr = s.recvfrom(1024) # buffer size is 1024 bytes
     #Setting the event makes the script halt
