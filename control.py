@@ -10,12 +10,12 @@ def start(args, t_stop,  addr):
 
 t_stop = threading.Event()
 t = None
-# the public network interface
-HOST = "nickspi.student.umd.edu"
 
 # create a raw socket and bind it to the public interface
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
-s.bind((HOST, 42297))
+#Binding to "" is the same as binding to any address
+s.bind(("", 42297))
+print socket.gethostname()
 while True:    
     data, addr = s.recvfrom(1024) # buffer size is 1024 bytes
     #Setting the event makes the script halt
