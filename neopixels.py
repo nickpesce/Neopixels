@@ -25,7 +25,7 @@ def start(args, stop=threading.Event()):
     b = None
     try:
         #Separates the passed in arguments to option, argument tuples.
-        opts, args = getopt.getopt(args[1:], "s:r:g:b:")
+        opts, args = getopt.getopt(args[1:], "s:r:g:b:h")
     except getopt.GetoptError:
         return help()
         sys.exit(2)
@@ -39,6 +39,8 @@ def start(args, stop=threading.Event()):
             g = int(arg)
         elif opt == '-b':
             b = int(arg)
+        elif opt == '-h':
+            return help()
 
     #Determine which parameters were passed.
     hasSpeed = False
