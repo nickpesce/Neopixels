@@ -1,2 +1,0 @@
-#!/bin/sh
-sudo pkill python --signal SIGINT
