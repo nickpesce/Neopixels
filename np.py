@@ -3,7 +3,6 @@ import signal
 import atexit
 import colorsys
 
-running = True
 # LED strip configuration:
 LED_COUNT      = 60      # Number of LED pixels.
 LED_PIN        = 18      # GPIO pin connected to the pixels (must support PWM!).
@@ -14,13 +13,6 @@ LED_INVERT     = False   # True to invert the signal (when using NPN transistor 
 
 ws2812 = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
 ws2812.begin()
-
-"""
-Store the rotation of UnicornHat, defaults to
-0 which places 0,0 on the top left with the B+
-HDMI port facing downwards
-"""
-_rotation = 0
 
     
 def _clean_shutdown():
@@ -78,15 +70,18 @@ def get_pixel(n):
 
 
 def set_pixels(pixels):
+    """Sets the pixels to corresponding picels in an array of pixel tuples. Pixel array must be >= than the string length"""
     for n in range(LED_COUNT):
         r, g, b = pixels[n]
         set_pixel(n, r, g, b)
 
 def set_all_pixels(r, g, b):
+    """Sets all of the pixels to a color in the RGB colorspace"""
     for n in range(0, 60):
         set_pixel(n, r, g, b)
 
 def set_all_pixels_hsv(h, s, v):
+    """Sets all of the pixels to a color in the HSV colorspace"""
     for n in range(0, 60):
         set_pixel_hsv(n, h, s, v)
         
