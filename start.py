@@ -1,10 +1,23 @@
 import socket, sys
 
-UDP_IP = socket.gethostbyname("nickspi.student.umd.edu")
+UDP_IP = "nickspi.student.umd.edu"
 UDP_PORT = 42297
 
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
-sock.sendto(" ".join(sys.argv[1:]), (UDP_IP, UDP_PORT))
-sock.bind((UDP_IP, UDP_PORT))
-response, addr = sock.recvfrom(1024)
-print response
+try:
+    socks = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    socks.sendto(" ".join(sys.argv[1:]), (UDP_IP, UDP_PORT))
+except:
+    print "could not connect"
+finally:
+    socks.close()
+
+sockr = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
+sockr.bind(("", UDP_PORT))
+sockr.settimeout(2)
+try:
+    response, addr = sockr.recvfrom(1024)
+    print response
+except:
+    print "no response"
+finally:
+    sockr.close()
