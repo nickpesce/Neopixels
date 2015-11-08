@@ -71,7 +71,8 @@ def get_pixel(n):
 
 def set_pixels(pixels):
     """Sets the pixels to corresponding picels in an array of pixel tuples. Pixel array must be >= than the string length"""
-    for n in range(LED_COUNT):
+    clear()
+    for n in range(0, len(pixels)):
         r, g, b = pixels[n]
         set_pixel(n, r, g, b)
 
