@@ -8,7 +8,6 @@ try:
     socks.sendto(" ".join(sys.argv[1:]), (UDP_IP, UDP_PORT))
 except:
     print "could not connect"
-    sys.exit(2)
 finally:
     socks.close()
 
