@@ -31,18 +31,20 @@ def start(args, stop=threading.Event()):
         return (help(), None)
         sys.exit(2)
     for opt, val in opts:
-        #assign variables to passed in values
-        if opt == '-s':
-            speed = float(val)
-        elif opt == '-r':
-            r = int(val)
-        elif opt == '-g':
-            g = int(val)
-        elif opt == '-b':
-            b = int(val)
-        elif opt == '-h':
-            return (help(), None)
-
+        try:
+            #assign variables to passed in values
+            if opt == '-s':
+                speed = float(val)
+            elif opt == '-r':
+                r = int(val)
+            elif opt == '-g':
+                g = int(val)
+            elif opt == '-b':
+                b = int(val)
+            elif opt == '-h':
+                return (help(), None)
+        except:
+            return (("flag " + opt + " with value " + val + " is not valid!"), None) 
 
     #Call with the correct parameters based on what was passed in.
     # If parameters dod not match, an error will be thrown.
