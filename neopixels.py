@@ -3,7 +3,7 @@ import np, time, random, math, sys, getopt, threading
 __author__="Nick Pesce"
 __email__="npesce@terpmail.umd.edu"
 
-global stop_event
+stop_event = None
 
 def start(args, stop=threading.Event()):
     """Determines effect  parameters to run with.
@@ -16,8 +16,9 @@ def start(args, stop=threading.Event()):
     Param stop: thread stop event."""
     global stop_event
     stop_event = stop
+
     if len(args)<1:
-        return help()
+        return (help(), None)
         sys.exit(2)
     speed = None
     r = None
@@ -27,7 +28,7 @@ def start(args, stop=threading.Event()):
         #Separates the passed in arguments to option, argument tuples.
         opts, rest = getopt.getopt(args[1:], "s:r:g:b:h")
     except getopt.GetoptError:
-        return help()
+        return (help(), None)
         sys.exit(2)
     for opt, val in opts:
         #assign variables to passed in values
@@ -40,8 +41,21 @@ def start(args, stop=threading.Event()):
         elif opt == '-b':
             b = int(val)
         elif opt == '-h':
-            return help()
+            return (help(), None)
 
+
+    #Call with the correct parameters based on what was passed in.
+    # If parameters dod not match, an error will be thrown.
+    try:
+        effect = effects[args[0]]
+        t = threading.Thread(target=run_effect, args=(effect, r, g, b, speed))
+        t.daemon = True
+        t.start()
+        return (args[0] + " started!", t)
+    except Exception, e:
+        return (help(), None)
+
+def run_effect(effect, r, g, b, speed):
     #Determine which parameters were passed.
     hasSpeed = False
     hasColor = False
@@ -49,21 +63,15 @@ def start(args, stop=threading.Event()):
         hasSpeed = True
     if r is not None and b is not None and g is not None:
         hasColor = True
+    if hasSpeed and hasColor:
+        effect(speed = speed, r = r, g = g, b = b)
+    elif hasSpeed:
+        effect(speed = speed)
+    elif hasColor:
+        effect(r = r, g = g, b = b)
+    else:
+        effect()
 
-    #Call with the correct parameters based on what was passed in.
-    # If parameters dod not match, an error will be thrown.
-    try:
-        effect = effects[args[0]]
-        if hasSpeed and hasColor:
-            effect(speed = speed, r = r, g = g, b = b)
-        elif hasSpeed:
-            effect(speed = speed)
-        elif hasColor:
-            effect(r = r, g = g, b = b)
-        else:
-            effect()
-    except:
-        return help()
 
 def help():
     return """sudo python neopixels.py <effect> [-s speed] [-r red -g green -b blue]
@@ -238,7 +246,7 @@ effects = {'cycle' : cycle,
     }
 
 if __name__ == "__main__":
-    error = start(sys.argv[1:])
+    error = start(sys.argv[1:])[0]
     if not error is None:
         print error
         sys.exit(2)
