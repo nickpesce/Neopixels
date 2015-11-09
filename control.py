@@ -14,7 +14,7 @@ def start():
     si.bind(("", 42297))
     while True:    
         data, addr = si.recvfrom(1024) # buffer size is 1024 bytes
-        print data + " from " + str(addr[0]) + " : " + str(addr[1])
+        #print data + " from " + str(addr[0]) + " : " + str(addr[1])
         #Setting the event makes the script halt
         t_stop.set()
         #Wait for the previous thread to stop
