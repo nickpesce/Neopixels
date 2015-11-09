@@ -193,11 +193,8 @@ def on(color = (255, 255, 255)):
     """Turns the entire string on.
     Param r, g, b: Default white. RGB values for light color. [0, 255]"""
 
-    global stop_event
     np.set_all_pixels(color[0], color[1], color[2])
     np.show()
-    while not stop_event.is_set():
-        time.sleep(1)
 
 def disco(speed=1):
     """Pattern formed when the color spectrum is repeated and condensed, then reversed
