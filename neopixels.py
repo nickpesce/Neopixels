@@ -34,7 +34,6 @@ def start(args, stop=threading.Event()):
             if opt == '-s':
                 speed = float(val)
             elif opt == '-c':
-                print val
                 if ";" in val:
                     c = get_int_tuple_tuple(val)
                 else:
@@ -48,6 +47,9 @@ def start(args, stop=threading.Event()):
     # If parameters dod not match, an error will be thrown.
     try:
         effect = effects[args[0]]
+        if effect == each:
+            each(c)
+            return ("Each started!", None)
         t = threading.Thread(target=run_effect, args=(effect, c, speed))
         t.daemon = True
         t.start()
@@ -57,9 +59,6 @@ def start(args, stop=threading.Event()):
 
 def run_effect(effect, c, speed):
     #Determine which parameters were passed.
-    if effect == each:
-        each(c)
-        return
     hasSpeed = False
     hasColor = False
     if not speed is None:
