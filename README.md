@@ -1,4 +1,4 @@
-# neopixels
+# Neopixels
 Python scripts for the Raspberry Pi 2 with Adafruit Neopixels(http://www.adafruit.com/products/1138)<br/>
 Fun, colorful animations to light up any dorm room.
 <hr/>
