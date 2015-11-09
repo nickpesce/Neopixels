@@ -21,13 +21,11 @@ def start(args, stop=threading.Event()):
         return (help(), None)
         sys.exit(2)
     speed = None
-    r = None
-    g = None
-    b = None
+    c = None
     try:
         #Separates the passed in arguments to option, argument tuples.
-        opts, rest = getopt.getopt(args[1:], "s:r:g:b:h")
-    except getopt.GetoptError:
+        opts, rest = getopt.getopt(args[1:], "s:c:h")
+    except getopt.GetoptError, e:
         return (help(), None)
         sys.exit(2)
     for opt, val in opts:
@@ -35,12 +33,12 @@ def start(args, stop=threading.Event()):
             #assign variables to passed in values
             if opt == '-s':
                 speed = float(val)
-            elif opt == '-r':
-                r = int(val)
-            elif opt == '-g':
-                g = int(val)
-            elif opt == '-b':
-                b = int(val)
+            elif opt == '-c':
+                print val
+                if ";" in val:
+                    c = get_int_tuple_tuple(val)
+                else:
+                    c = get_int_tuple(val)
             elif opt == '-h':
                 return (help(), None)
         except:
@@ -50,33 +48,37 @@ def start(args, stop=threading.Event()):
     # If parameters dod not match, an error will be thrown.
     try:
         effect = effects[args[0]]
-        t = threading.Thread(target=run_effect, args=(effect, r, g, b, speed))
+        t = threading.Thread(target=run_effect, args=(effect, c, speed))
         t.daemon = True
         t.start()
         return (args[0] + " started!", t)
     except Exception, e:
-        return (help(), None)
+        return (help()+str(e), None)
 
-def run_effect(effect, r, g, b, speed):
+def run_effect(effect, c, speed):
     #Determine which parameters were passed.
+    if effect == each:
+        each(c)
+        return
     hasSpeed = False
     hasColor = False
     if not speed is None:
         hasSpeed = True
-    if r is not None and b is not None and g is not None:
+    if not c is None:
         hasColor = True
+        
     if hasSpeed and hasColor:
-        effect(speed = speed, r = r, g = g, b = b)
+        effect(speed = speed, color = c)
     elif hasSpeed:
         effect(speed = speed)
     elif hasColor:
-        effect(r = r, g = g, b = b)
+        effect(color = c)
     else:
         effect()
 
 
 def help():
-    return """sudo python neopixels.py <effect> [-s speed] [-r red -g green -b blue]
+    return """sudo python neopixels.py <effect> [-s speed] [-c rgb tuple]
 Effects:\n    - """ + ("\n    - ".join(effects.keys()))
 
     
@@ -155,7 +157,7 @@ def rave(speed=1):
         np.show();
         stop_event.wait(.1/speed)
 
-def strobe(speed=1, r=255, g=255, b=255):
+def strobe(speed=1, color = (255, 255, 255)):
     """Entire string flashes rapidly.
     
     Param speed: Scales the default speed.
@@ -163,20 +165,20 @@ def strobe(speed=1, r=255, g=255, b=255):
     
     global stop_event
     while(not stop_event.is_set()):
-        np.set_all_pixels(r, g, b)
+        np.set_all_pixels(color[0], color[1], color[2])
         np.show()
         stop_event.wait(.1/speed)
         np.off()
         stop_event.wait(.1/speed)
         
-def throb(speed=1, r=255, b=255, g=255):
+def throb(speed=1, color=(255, 255, 255)):
     """Entire string cycles through brightness levels. Starts off, gradually gets brighters, the darker, and repeats.
     
     Param speed: Scales the default speed.
     Param r, g, b: Default white. RGB values for light color. [0, 255]"""
 
     global stop_event
-    np.set_all_pixels(r, g, b)
+    np.set_all_pixels(color[0], color[1], color[2])
     brightness = 0
     db = .01
     while(not stop_event.is_set()):
@@ -187,12 +189,12 @@ def throb(speed=1, r=255, b=255, g=255):
         brightness += db
         stop_event.wait(.01/speed)
 
-def on(r = 255, g = 255, b = 255):
+def on(color = (255, 255, 255)):
     """Turns the entire string on.
     Param r, g, b: Default white. RGB values for light color. [0, 255]"""
 
     global stop_event
-    np.set_all_pixels(r, g, b)
+    np.set_all_pixels(color[0], color[1], color[2])
     np.show()
     while not stop_event.is_set():
         time.sleep(1)
@@ -229,10 +231,29 @@ def chase(speed = 1):
         hue += .2
         hue %= 1
     
+def each(each):
+    """Lights the string according to the defined colors for each pixel passed in.
+    
+    Param each: List of tuples containing r, g, b values for each respective pixel in order."""
+    
+    np.set_pixels(each)
+    np.show()
+
 def stop():
     """Turns the string off."""
     np.off()
+    
+def get_int_tuple(arg):
+    """Takes a string representation of a tuple filled with ints and returns an actual
+    tuple filled with ints"""
+    
+    return tuple(map(int, arg[1:-1].split(",")))
 
+def get_int_tuple_tuple (args):
+    """Takes a string representation of multiple int tuples separated by spaces and returns a tuple of tuples."""
+    
+    return tuple(map(get_int_tuple, args.split(";")))
+    
 #Maps string names to functions
 effects = {'cycle' : cycle,
            'slide' : slide,
@@ -244,7 +265,8 @@ effects = {'cycle' : cycle,
            'on' : on,
            'chase' : chase,
            'throb' : throb,
-           'stop' : stop
+           'stop' : stop,
+           'each' : each
     }
 
 if __name__ == "__main__":
@@ -252,3 +274,4 @@ if __name__ == "__main__":
     if not error is None:
         print error
         sys.exit(2)
+
