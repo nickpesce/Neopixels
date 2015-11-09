@@ -49,7 +49,7 @@ def start(args, stop=threading.Event()):
         effect = effects[args[0]]
         if effect == each:
             each(c)
-            return ("Each started!", None)
+            return (None, None)
         t = threading.Thread(target=run_effect, args=(effect, c, speed))
         t.daemon = True
         t.start()
