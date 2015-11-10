@@ -4,8 +4,9 @@ __author__="Nick Pesce"
 __email__="npesce@terpmail.umd.edu"
 
 stop_event = None
+t = None
 
-def start(args, stop=threading.Event()):
+def start(args, stop = threading.Event()):
     """Determines effect  parameters to run with.
 
     Param args: The arguments passed in without the script name.
@@ -50,6 +51,7 @@ def start(args, stop=threading.Event()):
         if effect == each:
             each(c)
             return (None, None)
+        global t
         t = threading.Thread(target=run_effect, args=(effect, c, speed))
         t.daemon = True
         t.start()
@@ -88,7 +90,7 @@ def slide(speed = 1):
     global stop_event
     off = 0
     while(not stop_event.is_set()):
-        for n in range(0, 60):
+        for n in range(0, np.LED_COUNT):
             np.set_pixel_hsv(n, ((n+off)/60.0)%1, 1, 1)
         off+=.1
         np.show()
@@ -104,10 +106,10 @@ def bounce(speed=1):
     dx = .1
     while(not stop_event.is_set()):
         np.off()
-        np.set_pixel_hsv(int(x), (x/60.0)%1, 1, 1)
-        np.set_pixel_hsv(int(60-x), ((60-x)/60.0)%1, 1, 1)
+        np.set_pixel_hsv(int(x), (x/float(np.LED_COUNT))%1, 1, 1)
+        np.set_pixel_hsv(int(np.LED_COUNT-x), ((np.LED_COUNT-x)/float(np.LED_COUNT))%1, 1, 1)
         x+=dx
-        if(x+dx >=60 or x+dx <0):
+        if(x+dx >=np.LED_COUNT or x+dx <0):
             dx = -dx
         np.show()
         stop_event.wait(.01/speed)
@@ -118,15 +120,15 @@ def christmas(speed=1):
     Param speed: Scales the default speed"""
 
     global stop_event
-    for n in range(0, 60):
-        x = math.fabs((30 - n)/30.0)
+    for n in range(0, np.LED_COUNT):
+        x = math.fabs((np.LED_COUNT/2 - n)/float(np.LED_COUNT/2))
         np.set_pixel(n, int(255-(x*255)), int(x*255), 0)
             
     while(not stop_event.is_set()):
         first = np.get_pixel(0)
-        for n in range(0, 59):
+        for n in range(0, np.LED_COUNT-1):
             np.set_pixel(n, *np.get_pixel(n+1))
-            np.set_pixel(59, *first)
+            np.set_pixel(np.LED_COUNT-1, *first)
         np.show()
         stop_event.wait(.2/speed)
         
@@ -151,7 +153,7 @@ def rave(speed=1):
 
     global stop_event
     while(not stop_event.is_set()):
-        for n in range(0, 60):
+        for n in range(0, np.LED_COUNT):
             np.set_pixel(n, random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
         np.show();
         stop_event.wait(.1/speed)
@@ -203,8 +205,8 @@ def disco(speed=1):
     global stop_event
     off = 0
     while not stop_event.is_set():
-        for n in range(0, 60):
-            np.set_pixel_hsv(n, ((n*off)/60.0)%1, 1, 1)
+        for n in range(0, np.LED_COUNT):
+            np.set_pixel_hsv(n, ((n*off)/float(np.LED_COUNT))%1, 1, 1)
         off+=.1
         np.show()
         stop_event.wait(.05/speed)
@@ -218,7 +220,7 @@ def chase(speed = 1):
     global stop_event
     hue = 0;
     while not stop_event.is_set():
-        for n in range(0, 60):
+        for n in range(0, np.LED_COUNT):
             if stop_event.is_set():
                 break
             np.set_pixel_hsv(n, hue, 1, 1)
@@ -266,8 +268,10 @@ effects = {'cycle' : cycle,
     }
 
 if __name__ == "__main__":
-    error = start(sys.argv[1:])[0]
-    if not error is None:
-        print error
-        sys.exit(2)
-
+    response = start(sys.argv[1:])[0]
+    if not response is None:
+        print response
+    raw_input("Press any enter to stop...")
+    stop_event.set()
+    if t is not None:
+        t.join()
