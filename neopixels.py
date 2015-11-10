@@ -228,7 +228,18 @@ def chase(speed = 1):
             stop_event.wait(.05/speed)
         hue += .2
         hue %= 1
-    
+
+def drip(color=(0, 200, 255), speed=1):
+    dullness = [1.0]*np.LED_COUNT
+    while not stop_event.is_set():
+        for n in range(0, np.LED_COUNT):
+            np.set_pixel(n, int(color[0]/dullness[n]), int(color[1]/dullness[n]), int(color[2]/dullness[n]))
+            dullness[n] -= random.random()/20
+            if dullness[n]<=1 or random.randint(0, int(dullness[n]*20)) == 0:
+                dullness[n] = (random.random()*2)+4
+        np.show()
+        stop_event.wait(.05/speed)
+
 def each(each):
     """Lights the string according to the defined colors for each pixel passed in.
     
@@ -264,7 +275,8 @@ effects = {'cycle' : cycle,
            'chase' : chase,
            'throb' : throb,
            'stop' : stop,
-           'each' : each
+           'each' : each,
+           'drip' : drip
     }
 
 if __name__ == "__main__":
