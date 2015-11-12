@@ -240,6 +240,22 @@ def drip(color=(0, 200, 255), speed=1):
         np.show()
         stop_event.wait(.05/speed)
 
+def christmas_lights():
+    lights = []
+    for n in range(0, np.LED_COUNT):
+        seq = n%5
+        if seq == 0:
+            lights.append((100, 0, 0))
+        elif seq == 1:
+            lights.append((100, 0, 50))
+        elif seq == 2:
+            lights.append((0, 100, 0))
+        elif seq == 3:
+            lights.append((150, 100, 0))
+        elif seq == 4:
+            lights.append((0, 0, 100))
+    each(tuple(lights)) 
+
 def each(each):
     """Lights the string according to the defined colors for each pixel passed in.
     
@@ -275,8 +291,10 @@ effects = {'cycle' : cycle,
            'chase' : chase,
            'throb' : throb,
            'stop' : stop,
+           'off' : stop,
            'each' : each,
-           'drip' : drip
+           'drip' : drip,
+           'christmas_lights' : christmas_lights
     }
 
 if __name__ == "__main__":
