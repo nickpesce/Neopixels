@@ -189,6 +189,7 @@ def throb(speed=1, color=(255, 255, 255)):
             db = -db
         brightness += db
         stop_event.wait(.01/speed)
+    np.brightness(1)
 
 def on(color = (255, 255, 255)):
     """Turns the entire string on.
