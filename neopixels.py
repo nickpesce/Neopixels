@@ -80,7 +80,7 @@ def run_effect(effect, c, speed):
 
 def help():
     return """sudo python neopixels.py <effect> [-s speed] [-c rgb tuple]
-Effects:\n    - """ + ("\n    - ".join(effects.keys()))
+Effects:\n    ~ """ + ("\n    ~ ".join(sorted(effects.keys())))
 
     
 def slide(speed = 1):
