@@ -57,7 +57,7 @@ def start(args, stop = threading.Event()):
         t.start()
         return (args[0] + " started!", t)
     except Exception, e:
-        return (help()+str(e), None)
+        return (help(), None)
 
 def run_effect(effect, c, speed):
     #Determine which parameters were passed.
