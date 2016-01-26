@@ -79,8 +79,7 @@ def run_effect(effect, c, speed):
 
 
 def help():
-    return """sudo python neopixels.py <effect> [-s speed] [-c rgb tuple]
-Effects:\n    ~ """ + ("\n    ~ ".join(sorted(effects.keys())))
+    return """Effects:\n    ~ """ + ("\n    ~ ".join("%s %s" % tup for tup in command_help.items()))
 
     
 def slide(speed = 1):
@@ -296,6 +295,22 @@ effects = {'cycle' : cycle,
            'each' : each,
            'drip' : drip,
            'christmas_lights' : christmas_lights
+    }
+
+command_help = {'cycle' : '[-c (r,g,b)] [-s speed]',
+        'slide' : '[-s speed]',
+        'bounce' : '[-s speed]',
+        'christmas' : '[-s speed]',
+        'rave' : '[-s speed}',
+        'strobe' : '[-c (r,g,b)] [-s speed]',
+        'disco' : '[-s speed]',
+        'on' : '[-c (r,g,b)] [-s speed]',
+        'chase' : '[-s speed]',
+        'throb' : '[-c (r,g,b)] [-s speed]',
+        'off' : 'alias: stop',
+        'drip' : '[-c (r,g,b)] [-s speed]',
+        'christmas_lights' : '',
+        'each' : '[-c ((r,g,b),...)]'
     }
 
 if __name__ == "__main__":
