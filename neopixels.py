@@ -297,7 +297,8 @@ effects = {'cycle' : cycle,
            'christmas_lights' : christmas_lights
     }
 
-command_help = {'cycle' : '[-c (r,g,b)] [-s speed]',
+command_help = {
+        'cycle' : '[-s speed]',
         'slide' : '[-s speed]',
         'bounce' : '[-s speed]',
         'christmas' : '[-s speed]',
