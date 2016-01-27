@@ -305,7 +305,7 @@ command_help = {
         'rave' : '[-s speed}',
         'strobe' : '[-c (r,g,b)] [-s speed]',
         'disco' : '[-s speed]',
-        'on' : '[-c (r,g,b)] [-s speed]',
+        'on' : '[-c (r,g,b)]',
         'chase' : '[-s speed]',
         'throb' : '[-c (r,g,b)] [-s speed]',
         'off' : 'alias: stop',
