@@ -37,8 +37,14 @@ def start(args, stop = threading.Event()):
             elif opt == '-c':
                 if ";" in val:
                     c = get_int_tuple_tuple(val)
-                else:
+                elif "(" in val:
                     c = get_int_tuple(val)
+                elif val == "soft":
+                    c = (125, 113, 76);
+                elif val == "soft_blue":
+                    c = (95, 105, 135);
+                elif val == "red":
+                    c = (255, 0, 0);
             elif opt == '-h':
                 return (help(), None)
         except:
