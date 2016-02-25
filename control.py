@@ -15,20 +15,23 @@ def start():
     while True:    
         data, addr = si.recvfrom(1024) # buffer size is 1024 bytes
         #print data + " from " + str(addr[0]) + " : " + str(addr[1])
-        #Setting the event makes the script halt
-        t_stop.set()
-        #Wait for the previous thread to stop
-        if not t is None:
-            t.join()
-        #Reset the flag for the next thread
-        t_stop.clear()
-        #start the next
-        data, thread = neopixels.start(data.split(), t_stop)
-        t = thread
-        if not data is None:
-            print data
+        if(not neopixels.is_effect(data)):
+           ret = neopixels.help()
+        else:
+            #Setting the event makes the script halt
+            t_stop.set()
+            #Wait for the previous thread to stop
+            if not t is None:
+                t.join()
+            #Reset the flag for the next thread
+            t_stop.clear()
+            #start the next
+            ret, thread = neopixels.start(data.split(), t_stop)
+            t = thread
+        if not ret is None:
+            print ret
             so = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            so.sendto(data, (addr[0], 42297))
+            so.sendto(ret, (addr[0], 42297))
             so.close()
 
 if __name__=="__main__":

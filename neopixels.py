@@ -83,6 +83,8 @@ def run_effect(effect, c, speed):
     else:
         effect()
 
+def is_effect(name):
+    return name.split(' ', 1)[0] in effects
 
 def help():
     return """Effects:\n    ~ """ + ("\n    ~ ".join("%s %s" % tup for tup in command_help.items()))
