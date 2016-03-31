@@ -1,23 +1,25 @@
 import socket, sys
 
-UDP_IP = "nickspi.student.umd.edu"
-UDP_PORT = 42297
+TCP_IP = "nickspi.student.umd.edu"
+TCP_PORT = 42297
 
 try:
-    socks = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    socks.sendto(" ".join(sys.argv[1:]), (UDP_IP, UDP_PORT))
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect((TCP_IP, TCP_PORT))
+    sock.send(" ".join(sys.argv[1:]))
+    try:
+        #If the timeout is reached, an error will be thrown
+        #and "No response" will be printed
+        sock.settimeout(2)
+        #Recv a packet from the server with a biffer of 1024 bytes
+        resp = sock.recv(1024)
+        #print the response to the terminal
+        print resp
+    except:
+        print "No response"
 except:
+    #if there was an error establishing the socket connection.
     print "could not connect"
 finally:
-    socks.close()
-
-sockr = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
-sockr.bind(("", UDP_PORT))
-sockr.settimeout(2)
-try:
-    response, addr = sockr.recvfrom(1024)
-    print response
-except:
-    print "no response"
-finally:
-    sockr.close()
+    #Always close the socket when done.
+    sock.close()

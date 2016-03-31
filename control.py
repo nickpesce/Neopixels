@@ -7,13 +7,15 @@ def start():
     global t_stop
     global t
     # create a raw socket and bind it to the public interface
-    si = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
-    #Allow socket to be reopened immediately after closing
-    si.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    si = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # TCP
     #Binding to "" is the same as binding to any address
     si.bind(("", 42297))
+    #Start listening for TCP connections with a max backlog of 5
+    si.listen(5);
     while True:    
-        data, addr = si.recvfrom(1024) # buffer size is 1024 bytes
+        #Accept any connection.
+        connect, addr = si.accept()
+        data = connect.recv(1024) # buffer size is 1024 bytes
         #print data + " from " + str(addr[0]) + " : " + str(addr[1])
         if(not neopixels.is_effect(data)):
            ret = neopixels.help()
@@ -30,9 +32,10 @@ def start():
             t = thread
         if not ret is None:
             print ret
-            so = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            so.sendto(ret, (addr[0], 42297))
-            so.close()
+            #send the result back to the client.
+            connect.send(ret);
+        connect.close()
+    si.close()
 
 if __name__=="__main__":
     start()
