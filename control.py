@@ -16,7 +16,7 @@ def start():
         #Accept any connection.
         connect, addr = si.accept()
         data = connect.recv(1024) # buffer size is 1024 bytes
-        #print data + " from " + str(addr[0]) + " : " + str(addr[1])
+        print data + " from " + str(addr[0]) + " : " + str(addr[1])
         if(not neopixels.is_effect(data)):
            ret = neopixels.help()
         else:
@@ -30,6 +30,7 @@ def start():
             #start the next
             ret, thread = neopixels.start(data.split(), t_stop)
             t = thread
+
         if not ret is None:
             print ret
             #send the result back to the client.
