@@ -17,7 +17,6 @@ def start(args, stop = threading.Event()):
     Param stop: thread stop event."""
     global stop_event
     stop_event = stop
-
     if len(args)<1:
         return (help(), None)
         sys.exit(2)

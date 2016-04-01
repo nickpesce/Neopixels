@@ -1,12 +1,15 @@
-import socket, sys
+import socket, sys, ConfigParser
 
-TCP_IP = "nickspi.student.umd.edu"
-TCP_PORT = 42297
+config = ConfigParser.ConfigParser()
+config.read("config.ini")
+TCP_IP = config.get("General", "hostname")
+TCP_PORT = config.getint("General", "port")
+password = config.get("General", "password")
 
 try:
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((TCP_IP, TCP_PORT))
-    sock.send(" ".join(sys.argv[1:]))
+    sock.send(" ".join([password] + sys.argv[1:]))
     try:
         #If the timeout is reached, an error will be thrown
         #and "No response" will be printed
