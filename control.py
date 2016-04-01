@@ -1,6 +1,8 @@
 import neopixels, socket, threading, time
 import ConfigParser
 
+FLAG_RETURN = int('0b01', 2)
+FLAG_STAY_CONNECTED = int('0b10', 2)
 
 t_stop = threading.Event()
 t = None
@@ -20,9 +22,11 @@ def start():
     si.bind(("", port))
     #Start listening for TCP connections with a max backlog of 5
     si.listen(5);
-    while True:    
+    while True:
         #Accept any connection.
         connect, addr = si.accept()
+        #make a varaible for the flags. Set after effect is started.
+        flags = 0;
         data = connect.recv(1024).split() # buffer size is 1024 bytes
         #print str(data) + " from " + str(addr[0]) + " : " + str(addr[1])
         #Check the password
@@ -41,13 +45,15 @@ def start():
                 #Reset the flag for the next thread
                 t_stop.clear()
                 #start the next
-                ret, thread = neopixels.start(command, t_stop)
+                ret, f, thread = neopixels.start(command, t_stop)
+                flags = f
                 t = thread
 
         if not ret is None:
             print ret
-            #send the result back to the client.
-            connect.send(ret);
+            #send the result back to the client(unless -r flag is set).
+            if(flags & FLAG_RETURN == 0):
+                connect.send(ret)
         connect.close()
     si.close()
 

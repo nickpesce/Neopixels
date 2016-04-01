@@ -3,6 +3,8 @@ import np, time, random, math, sys, getopt, threading
 __author__="Nick Pesce"
 __email__="npesce@terpmail.umd.edu"
 
+FLAG_RETURN = int('0b01', 2)
+FLAG_STAY_CONNECTED = int('0b10', 2)
 stop_event = None
 t = None
 
@@ -12,21 +14,24 @@ def start(args, stop = threading.Event()):
     Param args: The arguments passed in without the script name.
     args:
         - name of effect (Must be first)
-        - -r [0, 255] -g [0, 255] -b [0, 255]. All or none.
+        - -c ([0, 255],[0, 255],[0, 255]). Set the color.
         - -s (0, infinity) speed. multiple of normal.
+        - -e keep the stream open. Only use for quickly repeated commands throught control.py
+        - -r Prevents output from being sent back when using control.py
     Param stop: thread stop event."""
     global stop_event
     stop_event = stop
     if len(args)<1:
-        return (help(), None)
+        return (help(), 0, None)
         sys.exit(2)
     speed = None
     c = None
+    flags = 0;
     try:
         #Separates the passed in arguments to option, argument tuples.
-        opts, rest = getopt.getopt(args[1:], "s:c:h")
+        opts, rest = getopt.getopt(args[1:], "s:c:h:e:r")
     except getopt.GetoptError, e:
-        return (help(), None)
+        return ("Invalid Arguments:\n"+help(), 0, None)
         sys.exit(2)
     for opt, val in opts:
         try:
@@ -39,30 +44,34 @@ def start(args, stop = threading.Event()):
                 elif "(" in val:
                     c = get_int_tuple(val)
                 elif val == "soft":
-                    c = (125, 113, 76);
+                    c = (125, 113, 76)
                 elif val == "soft_blue":
-                    c = (95, 105, 135);
+                    c = (95, 105, 135)
                 elif val == "red":
-                    c = (255, 0, 0);
+                    c = (255, 0, 0)
             elif opt == '-h':
-                return (help(), None)
+                return (help(), 0, None)
+            elif opt == '-r':
+                flags += FLAG_RETURN
+            elif opt == '-e':
+                flags += FLAG_STAY_CONNECTED
         except:
-            return (("flag " + opt + " with value " + val + " is not valid!"), None) 
+            return (("flag " + opt + " with value " + val + " is not valid!"), 0, None) 
 
     #Call with the correct parameters based on what was passed in.
-    # If parameters dod not match, an error will be thrown.
+    # If parameters do not match, an error will be thrown.
     try:
         effect = effects[args[0]]
         if effect == each:
             each(c)
-            return (None, None)
+            return ("each started!", flags, None)
         global t
         t = threading.Thread(target=run_effect, args=(effect, c, speed))
         t.daemon = True
         t.start()
-        return (args[0] + " started!", t)
+        return (args[0] + " started!", flags, t)
     except Exception, e:
-        return (help(), None)
+        return (help(), 0, None)
 
 def run_effect(effect, c, speed):
     #Determine which parameters were passed.
@@ -309,7 +318,7 @@ command_help = {
         'slide' : '[-s speed]',
         'bounce' : '[-s speed]',
         'christmas' : '[-s speed]',
-        'rave' : '[-s speed}',
+        'rave' : '[-s speed]',
         'strobe' : '[-c (r,g,b)] [-s speed]',
         'disco' : '[-s speed]',
         'on' : '[-c (r,g,b)]',
