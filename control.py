@@ -29,8 +29,11 @@ def start():
         flags = 0;
         data = connect.recv(1024).split() # buffer size is 1024 bytes
         #print str(data) + " from " + str(addr[0]) + " : " + str(addr[1])
+        #Ensure that there is a password and commands
+        if(len(data) < 2):
+            ret = "Not enough arguments"
         #Check the password
-        if(data[0] != password):
+        elif(data[0] != password):
             ret = "Incorrect Password" 
         else:
             command = data[1:]
