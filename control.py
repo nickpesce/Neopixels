@@ -41,8 +41,11 @@ def start():
         else:
             command = data[1:]
             if(command[0] == "revert" or command[0] == "last" or command[0] == "back"):
+                #if there is no previous effect to show, set the stack to empty and turn off the lights
                 if(len(stack) < 2):
-                    ret = "There is no last effect!"
+                    stack[:] = []
+                    command[0] = "off"
+                #If there is a previous effect, pop off the current effect, then set eh command to the previous
                 else:
                     stack.pop()
                     command = stack.pop()
