@@ -49,7 +49,7 @@ def start():
                 else:
                     stack.pop()
                     command = stack.pop()
-            if(not neopixels.is_effect(command[0])):
+            if(not neopixels.is_effect(command[0].lower())):
                 if(ret == None):
                     ret = neopixels.help()
             else:

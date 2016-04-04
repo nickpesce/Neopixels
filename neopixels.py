@@ -29,7 +29,7 @@ def start(args, stop = threading.Event()):
     flags = 0;
     try:
         #Separates the passed in arguments to option, argument tuples.
-        opts, rest = getopt.getopt(args[1:], "s:c:h:e:r")
+        opts, rest = getopt.gnu_getopt(args[1:], "s:c:h:e:r")
     except getopt.GetoptError, e:
         return ("Invalid Arguments:\n"+help(), 0, None, False)
         sys.exit(2)
@@ -63,7 +63,7 @@ def start(args, stop = threading.Event()):
     #Call with the correct parameters based on what was passed in.
     # If parameters do not match, an error will be thrown.
     try:
-        effect = effects[args[0]]
+        effect = effects[args[0].lower()]
         if effect == each:
             each(c)
             return ("each started!", flags, None, True)
@@ -80,16 +80,16 @@ def combine_colors_in_list(list):
     ret = []
     cat = None
     for i in range(0, len(list)):
-        if speeds.has_key(list[i]):
+        if speeds.has_key(list[i].lower()):
             if not cat is None:
                 ret.append(cat)
                 cat = None
-            ret.append(list[i])
+            ret.append(list[i].lower())
         else:
             if cat is None:
-                cat = list[i]
+                cat = list[i].lower()
             else:
-                cat += " " + list[i]
+                cat += " " + list[i].lower()
     if not cat is None:
         ret.append(cat)
     return ret
