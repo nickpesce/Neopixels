@@ -58,8 +58,8 @@ def start(args, stop = threading.Event()):
                     c = get_int_tuple_tuple(val)
                 elif "(" in val:
                     c = get_int_tuple(val)
-                elif colors.has_key(word):
-                    c = colors[word]
+                elif colors.has_key(val):
+                    c = colors[val]
             elif opt == '-h':
                 return (help(), 0, None, False)
             elif opt == '-r':
