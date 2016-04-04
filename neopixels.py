@@ -33,6 +33,21 @@ def start(args, stop = threading.Event()):
     except getopt.GetoptError, e:
         return ("Invalid Arguments:\n"+help(), 0, None, False)
         sys.exit(2)
+    for word in rest:
+        if word == "fastest":
+            speed = 10
+        elif word == "faster":
+            speed = 5
+        elif word == "fast":
+            speed = 3
+        elif word == "slow":
+            speed = .333
+        elif word == "slower":
+            speed = .2
+        elif word == "slowest":
+            speed = .1
+        elif colors.has_key(word):
+            c = colors[word]
     for opt, val in opts:
         try:
             #assign variables to passed in values
@@ -43,12 +58,8 @@ def start(args, stop = threading.Event()):
                     c = get_int_tuple_tuple(val)
                 elif "(" in val:
                     c = get_int_tuple(val)
-                elif val == "soft":
-                    c = (125, 113, 76)
-                elif val == "soft_blue":
-                    c = (95, 105, 135)
-                elif val == "red":
-                    c = (255, 0, 0)
+                elif colors.has_key(word):
+                    c = colors[word]
             elif opt == '-h':
                 return (help(), 0, None, False)
             elif opt == '-r':
@@ -329,6 +340,20 @@ command_help = {
         'christmas_lights' : '',
         'each' : '[-c ((r,g,b),...)]'
     }
+
+colors = {
+        'soft' : (125, 113, 76), 
+        'red' : (255, 0, 0),
+        'blue' : (0, 0, 255),
+        'green' : (0, 255, 0),
+        'cyan' : (0, 255, 255),
+        'yellow' : (255, 255, 0),
+        'magenta' : (255, 0, 255),
+        'white' : (255, 255, 255),
+        'purple' : (128, 0, 128),
+        'pink' : (255, 20, 147),
+        'cool' : (95, 105, 135)
+}
 
 if __name__ == "__main__":
     response = start(sys.argv[1:])[0]
