@@ -33,19 +33,10 @@ def start(args, stop = threading.Event()):
     except getopt.GetoptError, e:
         return ("Invalid Arguments:\n"+help(), 0, None, False)
         sys.exit(2)
+    rest = combine_colors_in_list(rest)
     for word in rest:
-        if word == "fastest":
-            speed = 10
-        elif word == "faster":
-            speed = 5
-        elif word == "fast":
-            speed = 3
-        elif word == "slow":
-            speed = .333
-        elif word == "slower":
-            speed = .2
-        elif word == "slowest":
-            speed = .1
+        if speeds.has_key(word):
+            speed = speeds[word]
         elif colors.has_key(word):
             c = colors[word]
     for opt, val in opts:
@@ -83,6 +74,25 @@ def start(args, stop = threading.Event()):
         return (args[0] + " started!", flags, t, True)
     except Exception, e:
         return (help(), 0, None, False)
+
+def combine_colors_in_list(list):
+    """Takes a list of strings, and combines adjacent strings that are not known to be speeds"""
+    ret = []
+    cat = None
+    for i in range(0, len(list)):
+        if speeds.has_key(list[i]):
+            if not cat is None:
+                ret.append(cat)
+                cat = None
+            ret.append(list[i])
+        else:
+            if cat is None:
+                cat = list[i]
+            else:
+                cat += " " + list[i]
+    if not cat is None:
+        ret.append(cat)
+    return ret
 
 def run_effect(effect, c, speed):
     #Determine which parameters were passed.
@@ -342,6 +352,7 @@ command_help = {
     }
 
 colors = {
+
         'soft' : (125, 113, 76), 
         'red' : (255, 0, 0),
         'blue' : (0, 0, 255),
@@ -352,7 +363,16 @@ colors = {
         'white' : (255, 255, 255),
         'purple' : (128, 0, 128),
         'pink' : (255, 20, 147),
-        'cool' : (95, 105, 135)
+        'soft blue' : (95, 105, 135)
+}
+
+speeds = {
+        'fastest' : 10,
+        'faster' : 5,
+        'fast' : 3,
+        'slow' : .3333,
+        'slower' : .2,
+        'slowest' : .1
 }
 
 if __name__ == "__main__":
