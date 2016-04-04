@@ -10,6 +10,7 @@ config = ConfigParser.ConfigParser()
 config.read("config.ini")
 password = config.get("General", "password")
 port = config.getint("General", "port")
+stack = []
 
 def start():
     global t_stop
@@ -25,6 +26,8 @@ def start():
     while True:
         #Accept any connection.
         connect, addr = si.accept()
+        #Return string varaible
+        ret = None
         #make a varaible for the flags. Set after effect is started.
         flags = 0;
         data = connect.recv(1024).split() # buffer size is 1024 bytes
@@ -37,8 +40,15 @@ def start():
             ret = "Incorrect Password" 
         else:
             command = data[1:]
+            if(command[0] == "revert" or command[0] == "last" or command[0] == "back"):
+                if(len(stack) < 2):
+                    ret = "There is no last effect!"
+                else:
+                    stack.pop()
+                    command = stack.pop()
             if(not neopixels.is_effect(command[0])):
-               ret = neopixels.help()
+                if(ret == None):
+                    ret = neopixels.help()
             else:
                 #Setting the event makes the script halt
                 t_stop.set()
@@ -48,9 +58,11 @@ def start():
                 #Reset the flag for the next thread
                 t_stop.clear()
                 #start the next
-                ret, f, thread = neopixels.start(command, t_stop)
+                ret, f, thread, success = neopixels.start(command, t_stop)
                 flags = f
                 t = thread
+                if(success):
+                    stack.append(command);
 
         if not ret is None:
             print ret

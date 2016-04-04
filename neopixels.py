@@ -22,7 +22,7 @@ def start(args, stop = threading.Event()):
     global stop_event
     stop_event = stop
     if len(args)<1:
-        return (help(), 0, None)
+        return (help(), 0, None, False)
         sys.exit(2)
     speed = None
     c = None
@@ -31,7 +31,7 @@ def start(args, stop = threading.Event()):
         #Separates the passed in arguments to option, argument tuples.
         opts, rest = getopt.getopt(args[1:], "s:c:h:e:r")
     except getopt.GetoptError, e:
-        return ("Invalid Arguments:\n"+help(), 0, None)
+        return ("Invalid Arguments:\n"+help(), 0, None, False)
         sys.exit(2)
     for opt, val in opts:
         try:
@@ -50,13 +50,13 @@ def start(args, stop = threading.Event()):
                 elif val == "red":
                     c = (255, 0, 0)
             elif opt == '-h':
-                return (help(), 0, None)
+                return (help(), 0, None, False)
             elif opt == '-r':
                 flags += FLAG_RETURN
             elif opt == '-e':
                 flags += FLAG_STAY_CONNECTED
         except:
-            return (("flag " + opt + " with value " + val + " is not valid!"), 0, None) 
+            return (("flag " + opt + " with value " + val + " is not valid!"), 0, None, False) 
 
     #Call with the correct parameters based on what was passed in.
     # If parameters do not match, an error will be thrown.
@@ -64,14 +64,14 @@ def start(args, stop = threading.Event()):
         effect = effects[args[0]]
         if effect == each:
             each(c)
-            return ("each started!", flags, None)
+            return ("each started!", flags, None, True)
         global t
         t = threading.Thread(target=run_effect, args=(effect, c, speed))
         t.daemon = True
         t.start()
-        return (args[0] + " started!", flags, t)
+        return (args[0] + " started!", flags, t, True)
     except Exception, e:
-        return (help(), 0, None)
+        return (help(), 0, None, False)
 
 def run_effect(effect, c, speed):
     #Determine which parameters were passed.
