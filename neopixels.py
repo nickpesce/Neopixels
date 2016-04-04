@@ -436,7 +436,7 @@ colors = {
         'thistle' : (216,191,216),
         'plum' : (221,160,221),
         'violet' : (238,130,238),
-        'magentafuchsia' : (255,0,255),
+        'magenta' : (255,0,255),
         'fuchsia' : (255,0,255),
         'orchid' : (218,112,214),
         'medium violet red' : (199,21,133),
