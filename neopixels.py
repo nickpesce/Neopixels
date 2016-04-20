@@ -293,6 +293,13 @@ def christmas_lights():
             lights.append((0, 0, 100))
     each(tuple(lights)) 
 
+def flash(speed = 1):
+    while not stop_event.is_set():
+        color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
+        np.set_all_pixels(color[0], color[1], color[2])
+        np.show()
+        stop_event.wait(1/speed)
+
 def each(each):
     """Lights the string according to the defined colors for each pixel passed in.
     
@@ -331,7 +338,8 @@ effects = {'cycle' : cycle,
            'off' : stop,
            'each' : each,
            'drip' : drip,
-           'christmas_lights' : christmas_lights
+           'christmas_lights' : christmas_lights,
+           'flash' : flash
     }
 
 command_help = {
@@ -348,6 +356,7 @@ command_help = {
         'off' : 'alias: stop',
         'drip' : '[-c (r,g,b)] [-s speed]',
         'christmas_lights' : '',
+        'flash' : '[-s speed]',
         'each' : '[-c ((r,g,b),...)]'
     }
 
