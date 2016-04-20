@@ -267,7 +267,7 @@ def chase(speed = 1):
         hue %= 1
 
 def drip(color=(0, 200, 255), speed=1):
-    dullness = [1.0]*np.LED_COUNT
+    dullness = [15]*np.LED_COUNT
     while not stop_event.is_set():
         for n in range(0, np.LED_COUNT):
             np.set_pixel(n, int(color[0]/dullness[n]), int(color[1]/dullness[n]), int(color[2]/dullness[n]))
