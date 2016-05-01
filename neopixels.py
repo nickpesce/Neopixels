@@ -267,6 +267,11 @@ def chase(speed = 1):
         hue %= 1
 
 def drip(color=(0, 200, 255), speed=1):
+    """Lights increase in brightness randomly, then drop off, making an effect like water
+    dropplets falling
+
+    Param color: The color of the lights. Defaults to (0, 200, 255), which is a dark teal color.
+    Param speed: Scales the default speed"""
     dullness = [15]*np.LED_COUNT
     while not stop_event.is_set():
         for n in range(0, np.LED_COUNT):
@@ -278,6 +283,7 @@ def drip(color=(0, 200, 255), speed=1):
         stop_event.wait(.05/speed)
 
 def christmas_lights():
+    """Lights light up in the colors and pattern of traditional christmas lights"""
     lights = []
     for n in range(0, np.LED_COUNT):
         seq = n%5
@@ -294,6 +300,9 @@ def christmas_lights():
     each(tuple(lights)) 
 
 def flash(speed = 1):
+    """All lights display the same color and change every second(by default).
+    
+    Param speed: Scales the default speed."""
     while not stop_event.is_set():
         color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
         np.set_all_pixels(color[0], color[1], color[2])

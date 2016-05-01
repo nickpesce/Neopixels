@@ -22,8 +22,7 @@ def _clean_shutdown():
     off()
 
 def brightness(b=0.2):
-    """Set the display brightness between 0.0 and 1.0
-    0.2 is highly recommended, UnicornHat can get painfully bright!"""
+    """Set the display brightness between 0.0 and 1.0"""
 
     if b > 1 or b < 0:
         raise ValueError('Brightness must be between 0.0 and 1.0')
@@ -45,7 +44,7 @@ def clear():
 
 
 def off():
-    """Clear the buffer and immediately update UnicornHat
+    """Clear the buffer and immediately update lights
     Turns off all pixels."""
     clear()
     show()
@@ -92,7 +91,7 @@ def get_pixels():
 
 
 def show():
-    """Update UnicornHat with the contents of the display buffer"""
+    """Update lights with the contents of the display buffer"""
     ws2812.show()
 
 signal.signal( signal.SIGHUP, _clean_shutdown )
